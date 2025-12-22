@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>마음 토닥 - 당신을 위한 위로</title>
+    <style>
+        /* CSS: 디자인 및 애니메이션 */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fdfcf0 0%, #faebeb 100%);
+            font-family: 'Pretendard', sans-serif;
+            color: #5d4037;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 { font-size: 1.5rem; margin-bottom: 20px; color: #8d6e63; }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 15px;
+            resize: none;
+            font-size: 1rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+
+        textarea:focus { border-color: #ffab91; }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            background-color: #ffab91;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        button:hover { background-color: #ff8a65; transform: scale(1.05); }
+
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            background-color: #fff;
+            display: none; /* 처음엔 숨김 */
+            animation: fadeIn 0.8s ease-in-out;
+            line-height: 1.6;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>당신의 마음을 들려주세요</h1>
+        <textarea id="userInput" placeholder="오늘 힘들었던 일이나, 누구에게도 하지 못한 말을 적어보세요..."></textarea>
+        <br>
+        <button onclick="provideComfort()">마음 나누기</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // JS: 로직 처리
+        const messages = [
+            "많이 힘들었죠? 그 마음 제가 다는 모르겠지만, 정말 고생 많았다고 말해주고 싶어요.",
+            "지금은 비록 힘들지만, 당신은 이겨낼 수 있는 충분한 힘을 가진 사람이에요.",
+            "가끔은 아무것도 하지 않아도 괜찮아요. 오늘 하루 버텨낸 것만으로도 당신은 최고예요.",
+            "당신의 잘못이 아니에요. 스스로를 너무 자책하지 않았으면 좋겠어요.",
+            "잠시 쉬어가도 괜찮아요. 따뜻한 차 한 잔 마시며 마음을 다독여보는 건 어떨까요?"
+        ];
+
+        function provideComfort() {
+            const input = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+
+            if (input.trim() === "") {
+                alert("마음을 조금만 적어주세요.");
+                return;
+            }
+
+            // 랜덤 문구 선택
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            resultDiv.innerText = messages[randomIndex];
+            
+            // 결과 창 보여주기
+            resultDiv.style.display = 'block';
+            
+            // 입력창 초기화 (선택 사항)
+            // document.getElementById('userInput').value = "";
+        }
+    </script>
+</body>
+</html>
