@@ -3,129 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 한잔 - 당신을 위한 따뜻한 위로</title>
+    <title>마음 한잔 - 마음의 뿌리 찾기</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
 
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            /* 배경색을 좀 더 차분한 찻물 느낌의 베이지톤으로 변경 */
             background: linear-gradient(180deg, #fdfbfb 0%, #ebedee 100%);
             font-family: 'Noto Sans KR', sans-serif;
             color: #4e342e;
         }
 
         .container {
-            width: 90%;
-            max-width: 450px;
+            width: 90%; max-width: 480px;
             background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 40px;
+            padding: 40px; border-radius: 40px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.08);
             text-align: center;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        /* 앱 이름 스타일 */
-        h1 { 
-            font-size: 1.8rem; 
-            margin-bottom: 8px; 
-            color: #6d4c41; 
-            font-weight: 700;
-            letter-spacing: -1px;
-        }
+        #loginSection { margin-bottom: 20px; }
+        .input-field { padding: 12px; border: 1px solid #d7ccc8; border-radius: 10px; width: 70%; margin-bottom: 10px; outline: none; }
 
-        p.subtitle { 
-            font-size: 0.95rem; 
-            color: #8d6e63; 
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
+        #mainContent { display: none; }
 
-        /* 차 애니메이션 영역 */
-        .tea-container {
-            margin: 0 auto 20px;
-            width: 100px;
-            height: 90px;
-            display: none; /* 클릭 전에는 숨김 */
-        }
+        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #6d4c41; font-weight: 700; }
+        .subtitle { font-size: 0.95rem; color: #8d6e63; margin-bottom: 20px; }
 
-        .steam {
-            stroke: #a1887f;
-            stroke-width: 2;
-            stroke-linecap: round;
-            fill: none;
-            animation: steamAnim 2.5s infinite ease-in-out;
-            opacity: 0;
-        }
+        .tea-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
+        .tea-option { cursor: pointer; padding: 10px; border: 1px solid #d7ccc8; border-radius: 15px; font-size: 0.8rem; background: white; transition: 0.3s; }
+        .tea-option.active { background-color: #8d6e63; color: white; border-color: #8d6e63; }
 
-        @keyframes steamAnim {
-            0% { transform: translateY(0) scaleX(1); opacity: 0; }
-            50% { opacity: 0.6; transform: translateY(-10px) scaleX(1.2); }
-            100% { transform: translateY(-25px) scaleX(1.5); opacity: 0; }
-        }
+        textarea { width: 100%; height: 120px; padding: 18px; border: 1px solid #d7ccc8; border-radius: 20px; resize: none; box-sizing: border-box; outline: none; background-color: #fcfaf9; font-size: 1rem; }
 
-        textarea {
-            width: 100%;
-            height: 160px;
-            padding: 20px;
-            border: 1px solid #d7ccc8;
-            border-radius: 20px;
-            resize: none;
-            font-size: 1rem;
-            outline: none;
-            box-sizing: border-box;
-            transition: all 0.3s;
-            background-color: #fcfaf9;
-            line-height: 1.6;
-        }
+        button { margin-top: 15px; padding: 14px 40px; border: none; border-radius: 35px; background: #8d6e63; color: white; cursor: pointer; font-weight: 500; transition: 0.3s; }
+        button:hover { background: #6d4c41; }
 
-        textarea:focus { 
-            border-color: #a1887f; 
-            background-color: #fff;
-            box-shadow: 0 0 8px rgba(161, 136, 127, 0.2);
+        /* 위로 및 성찰 섹션 */
+        #resultSection {
+            margin-top: 25px; padding: 25px; background: #fdfaf9; border-radius: 20px;
+            border: 1px solid #efebe9; display: none; text-align: left; animation: fadeIn 0.8s ease-out;
         }
-
-        button {
-            margin-top: 25px;
-            padding: 16px 45px;
-            border: none;
-            border-radius: 35px;
-            /* 차분한 브라운 계열 그라데이션 */
-            background: linear-gradient(90deg, #8d6e63, #6d4c41);
-            color: white;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(109, 76, 65, 0.3);
-        }
-
-        button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 6px 20px rgba(109, 76, 65, 0.4);
-            filter: brightness(1.1);
-        }
-
-        /* 위로 결과창 */
-        #result {
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 20px;
-            background-color: #f7f3f0;
-            display: none;
-            line-height: 1.8;
-            font-weight: 500;
-            color: #5d4037;
-            border: 1px dashed #d7ccc8;
-            animation: fadeIn 1s ease-out;
-        }
+        .comfort-text { color: #5d4037; font-weight: 500; margin-bottom: 15px; line-height: 1.6; }
+        .ask-more { color: #8d6e63; font-size: 0.9rem; border-top: 1px solid #eee; pt: 15px; padding-top: 15px; }
+        .btn-small { padding: 8px 15px; font-size: 0.8rem; margin-top: 10px; background: #a1887f; border-radius: 15px; }
+        
+        #deepQuestion { margin-top: 15px; padding: 15px; background: #fff; border-radius: 10px; border-left: 4px solid #8d6e63; color: #6d4c41; display: none; font-weight: 500; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -133,52 +58,93 @@
 <body>
 
     <div class="container">
-        <h1>마음 한잔</h1>
-        <p class="subtitle">누구에게도 말 못 할 고민이 있다면,<br>따뜻한 차 한 잔과 함께 털어놓으세요.</p>
-
-        <div id="teaIcon" class="tea-container">
-            <svg viewBox="0 0 100 100" width="80" height="80">
-                <path class="steam" d="M35 25 Q40 15 45 25 T55 25" style="animation-delay: 0s;"></path>
-                <path class="steam" d="M40 20 Q45 10 50 20 T60 20" style="animation-delay: 0.8s;"></path>
-                <path d="M25 45 H75 L70 75 C68 82 62 82 62 82 H38 C38 82 32 82 30 75 Z" fill="#fff" stroke="#8d6e63" stroke-width="2.5"></path>
-                <path d="M75 52 Q85 52 85 62 T73 70" fill="none" stroke="#8d6e63" stroke-width="2.5"></path>
-                <path d="M31 50 H69 L66 72 C66 75 63 75 63 75 H37 C37 75 34 75 34 72 Z" fill="#d7ccc8" opacity="0.7"></path>
-            </svg>
+        <div id="loginSection">
+            <h1>마음 한잔</h1>
+            <p class="subtitle">오셨나요? 당신의 이름을 알려주세요.</p>
+            <input type="text" id="userName" class="input-field" placeholder="이름을 입력하세요">
+            <br>
+            <button onclick="login()">입장하기</button>
         </div>
-        
-        <textarea id="userInput" placeholder="오늘 하루, 어떤 마음을 안고 오셨나요?"></textarea>
-        <br>
-        <button onclick="provideComfort()">마음 나누기</button>
 
-        <div id="result"></div>
+        <div id="mainContent">
+            <h1 id="welcomeMsg">환영합니다</h1>
+            <p class="subtitle">오늘 당신의 마음을 채워줄 차를 골라보세요.</p>
+
+            <div class="tea-selector">
+                <div class="tea-option active" onclick="selectTea('녹차', this)">녹차</div>
+                <div class="tea-option" onclick="selectTea('홍차', this)">홍차</div>
+                <div class="tea-option" onclick="selectTea('허브차', this)">허브차</div>
+                <div class="tea-option" onclick="selectTea('유자차', this)">유자차</div>
+                <div class="tea-option" onclick="selectTea('보리차', this)">보리차</div>
+                <div class="tea-option" onclick="selectTea('코코아', this)">코코아</div>
+            </div>
+
+            <textarea id="userInput" placeholder="오늘 어떤 일이 당신을 힘들게 했나요?"></textarea>
+            <button onclick="provideComfort()">마음 나누기</button>
+
+            <div id="resultSection">
+                <div id="comfortOutput" class="comfort-text"></div>
+                <div class="ask-more">
+                    지금 그 마음... <strong>더 자세히 물어봐도 괜찮을까요?</strong><br>
+                    <button class="btn-small" onclick="askDeepQuestion()">네, 이야기할래요</button>
+                </div>
+                <div id="deepQuestion"></div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const messages = [
-            "찻잔의 온기가 당신의 지친 마음을 부드럽게 감싸안아 주길 바라요. 오늘 참 고생 많았습니다.",
-            "차를 한 모금 마시듯, 힘든 마음도 천천히 삼켜보세요. 당신은 혼자가 아니에요.",
-            "지금 이 순간, 이 차 한 잔이 당신에게 가장 따뜻한 휴식이 되었으면 좋겠습니다.",
-            "가끔은 아무 생각 없이 차 향기에만 집중해도 괜찮아요. 당신은 충분히 잘하고 있습니다.",
-            "우려낼수록 깊어지는 차처럼, 오늘의 시련도 당신을 더 깊고 아름다운 사람으로 만들어줄 거예요.",
-            "당신의 잘못이 아니에요. 그저 오늘은 마음의 차 한 잔이 필요한 날이었을 뿐입니다."
+        let currentUser = "";
+        let selectedTea = "녹차";
+
+        const deepQuestions = [
+            "그 상황에서 당신을 가장 힘들게 했던 핵심적인 이유는 무엇이었나요?",
+            "이 고민이 처음 시작된 순간을 기억하시나요? 그때의 기분은 어땠나요?",
+            "이 문제가 해결된다면, 당신의 일상에서 무엇이 가장 먼저 바뀔까요?",
+            "혹시 타인의 시선 때문에 더 힘든 것은 아닐까요? 오직 당신의 마음만 본다면 어떨까요?",
+            "이 일을 겪기 전과 지금, 당신의 생각 중 바뀐 부분이 있을까요?",
+            "만약 당신의 소중한 친구가 똑같은 고민을 한다면, 어떤 말을 해주고 싶나요?"
         ];
+
+        function login() {
+            const name = document.getElementById('userName').value;
+            if (!name) return alert("이름을 입력해주세요.");
+            currentUser = name;
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('welcomeMsg').innerText = `${name}님의 마음 한잔`;
+        }
+
+        function selectTea(name, el) {
+            selectedTea = name;
+            document.querySelectorAll('.tea-option').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+        }
 
         function provideComfort() {
             const input = document.getElementById('userInput').value;
-            const resultDiv = document.getElementById('result');
-            const teaIcon = document.getElementById('teaIcon');
+            if (!input) return alert("당신의 마음을 조금만 들려주세요.");
 
-            if (input.trim() === "") {
-                alert("당신의 마음을 한 마디라도 들려주세요.");
-                return;
-            }
+            const resultSection = document.getElementById('resultSection');
+            const comfortOutput = document.getElementById('comfortOutput');
+            const deepQuestionDiv = document.getElementById('deepQuestion');
 
-            // 차 아이콘과 결과 표시
-            teaIcon.style.display = 'block';
+            // 초기화
+            deepQuestionDiv.style.display = 'none';
             
-            const randomIndex = Math.floor(Math.random() * messages.length);
-            resultDiv.innerText = messages[randomIndex];
-            resultDiv.style.display = 'block';
+            // 위로 메시지 (차 종류와 연계)
+            comfortOutput.innerText = `따뜻한 ${selectedTea} 한 잔을 건넵니다. 적어주신 고민을 읽으니 당신이 얼마나 애쓰고 있는지 느껴져요. 잠시 숨을 고르며 이 차의 온기를 느껴보세요.`;
+            
+            resultSection.style.display = 'block';
+        }
+
+        function askDeepQuestion() {
+            const deepQuestionDiv = document.getElementById('deepQuestion');
+            const randomIndex = Math.floor(Math.random() * deepQuestions.length);
+            
+            deepQuestionDiv.innerText = "💡 " + deepQuestions[randomIndex];
+            deepQuestionDiv.style.display = 'block';
+            deepQuestionDiv.style.animation = 'fadeIn 0.5s ease-out';
         }
     </script>
 </body>
