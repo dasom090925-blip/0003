@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 토닥 - 당신을 위한 위로</title>
+    <title>마음 한잔 - 당신을 위한 따뜻한 위로</title>
     <style>
-        /* 부드러운 폰트 적용 */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
 
         body {
@@ -15,150 +14,171 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(180deg, #fff5f5 0%, #fff0e6 100%);
+            /* 배경색을 좀 더 차분한 찻물 느낌의 베이지톤으로 변경 */
+            background: linear-gradient(180deg, #fdfbfb 0%, #ebedee 100%);
             font-family: 'Noto Sans KR', sans-serif;
-            color: #5d4037;
+            color: #4e342e;
         }
 
         .container {
             width: 90%;
             max-width: 450px;
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             padding: 40px;
             border-radius: 40px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
             text-align: center;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.3);
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        h1 { font-size: 1.6rem; margin-bottom: 10px; color: #8d6e63; font-weight: 700; }
-        p.subtitle { font-size: 0.9rem; color: #bcaaa4; margin-bottom: 25px; }
+        /* 앱 이름 스타일 */
+        h1 { 
+            font-size: 1.8rem; 
+            margin-bottom: 8px; 
+            color: #6d4c41; 
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        p.subtitle { 
+            font-size: 0.95rem; 
+            color: #8d6e63; 
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        /* 차 애니메이션 영역 */
+        .tea-container {
+            margin: 0 auto 20px;
+            width: 100px;
+            height: 90px;
+            display: none; /* 클릭 전에는 숨김 */
+        }
+
+        .steam {
+            stroke: #a1887f;
+            stroke-width: 2;
+            stroke-linecap: round;
+            fill: none;
+            animation: steamAnim 2.5s infinite ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes steamAnim {
+            0% { transform: translateY(0) scaleX(1); opacity: 0; }
+            50% { opacity: 0.6; transform: translateY(-10px) scaleX(1.2); }
+            100% { transform: translateY(-25px) scaleX(1.5); opacity: 0; }
+        }
 
         textarea {
             width: 100%;
             height: 160px;
             padding: 20px;
-            border: 2px solid #f1f1f1;
+            border: 1px solid #d7ccc8;
             border-radius: 20px;
             resize: none;
             font-size: 1rem;
             outline: none;
             box-sizing: border-box;
             transition: all 0.3s;
-            background-color: #fafafa;
+            background-color: #fcfaf9;
             line-height: 1.6;
         }
 
         textarea:focus { 
-            border-color: #ffab91; 
+            border-color: #a1887f; 
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(255,171,145,0.2);
+            box-shadow: 0 0 8px rgba(161, 136, 127, 0.2);
         }
 
         button {
             margin-top: 25px;
-            padding: 15px 40px;
+            padding: 16px 45px;
             border: none;
-            border-radius: 30px;
-            background: linear-gradient(90deg, #ffab91, #ff8a65);
+            border-radius: 35px;
+            /* 차분한 브라운 계열 그라데이션 */
+            background: linear-gradient(90deg, #8d6e63, #6d4c41);
             color: white;
             font-size: 1.1rem;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(255, 171, 145, 0.4);
+            box-shadow: 0 4px 15px rgba(109, 76, 65, 0.3);
         }
 
-        button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 171, 145, 0.6); }
-        button:active { transform: translateY(0); }
+        button:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 20px rgba(109, 76, 65, 0.4);
+            filter: brightness(1.1);
+        }
 
         /* 위로 결과창 */
         #result {
-            margin-top: 30px;
+            margin-top: 25px;
             padding: 25px;
             border-radius: 20px;
-            background-color: #fffaf0;
+            background-color: #f7f3f0;
             display: none;
             line-height: 1.8;
             font-weight: 500;
-            border-left: 5px solid #ffab91;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+            color: #5d4037;
+            border: 1px dashed #d7ccc8;
+            animation: fadeIn 1s ease-out;
         }
 
-        /* 로딩 애니메이션 */
-        .dots { display: none; margin-top: 20px; font-size: 1.2rem; color: #ffab91; }
-        .dots span { animation: blink 1.4s infinite both; }
-        .dots span:nth-child(2) { animation-delay: 0.2s; }
-        .dots span:nth-child(3) { animation-delay: 0.4s; }
-
-        @keyframes blink {
-            0% { opacity: 0.2; }
-            20% { opacity: 1; }
-            100% { opacity: 0.2; }
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>마음 토닥</h1>
-        <p class="subtitle">말하지 못한 마음의 짐을 이곳에 잠시 내려두세요.</p>
+        <h1>마음 한잔</h1>
+        <p class="subtitle">누구에게도 말 못 할 고민이 있다면,<br>따뜻한 차 한 잔과 함께 털어놓으세요.</p>
+
+        <div id="teaIcon" class="tea-container">
+            <svg viewBox="0 0 100 100" width="80" height="80">
+                <path class="steam" d="M35 25 Q40 15 45 25 T55 25" style="animation-delay: 0s;"></path>
+                <path class="steam" d="M40 20 Q45 10 50 20 T60 20" style="animation-delay: 0.8s;"></path>
+                <path d="M25 45 H75 L70 75 C68 82 62 82 62 82 H38 C38 82 32 82 30 75 Z" fill="#fff" stroke="#8d6e63" stroke-width="2.5"></path>
+                <path d="M75 52 Q85 52 85 62 T73 70" fill="none" stroke="#8d6e63" stroke-width="2.5"></path>
+                <path d="M31 50 H69 L66 72 C66 75 63 75 63 75 H37 C37 75 34 75 34 72 Z" fill="#d7ccc8" opacity="0.7"></path>
+            </svg>
+        </div>
         
-        <textarea id="userInput" placeholder="오늘 어떤 일이 있었나요? 당신의 이야기를 들어드릴게요..."></textarea>
-        
+        <textarea id="userInput" placeholder="오늘 하루, 어떤 마음을 안고 오셨나요?"></textarea>
+        <br>
         <button onclick="provideComfort()">마음 나누기</button>
 
-        <div id="loading" class="dots">당신의 이야기를 듣는 중<span>.</span><span>.</span><span>.</span></div>
         <div id="result"></div>
     </div>
 
     <script>
         const messages = [
-            "많이 힘들었죠? 그 마음 제가 다는 모르겠지만, 정말 고생 많았다고 말해주고 싶어요.",
-            "지금은 비록 힘들지만, 당신은 이겨낼 수 있는 충분한 힘을 가진 사람이에요.",
-            "가끔은 아무것도 하지 않아도 괜찮아요. 오늘 하루 버텨낸 것만으로도 당신은 최고예요.",
-            "당신의 잘못이 아니에요. 스스로를 너무 자책하지 않았으면 좋겠어요.",
-            "잠시 쉬어가도 괜찮아요. 따뜻한 차 한 잔 마시며 마음을 다독여보는 건 어떨까요?",
-            "오늘 하루도 정말 애쓰셨어요. 당신의 내일은 조금 더 평온하기를 바랄게요."
+            "찻잔의 온기가 당신의 지친 마음을 부드럽게 감싸안아 주길 바라요. 오늘 참 고생 많았습니다.",
+            "차를 한 모금 마시듯, 힘든 마음도 천천히 삼켜보세요. 당신은 혼자가 아니에요.",
+            "지금 이 순간, 이 차 한 잔이 당신에게 가장 따뜻한 휴식이 되었으면 좋겠습니다.",
+            "가끔은 아무 생각 없이 차 향기에만 집중해도 괜찮아요. 당신은 충분히 잘하고 있습니다.",
+            "우려낼수록 깊어지는 차처럼, 오늘의 시련도 당신을 더 깊고 아름다운 사람으로 만들어줄 거예요.",
+            "당신의 잘못이 아니에요. 그저 오늘은 마음의 차 한 잔이 필요한 날이었을 뿐입니다."
         ];
 
-        let isProcessing = false;
-
         function provideComfort() {
-            if (isProcessing) return;
-
             const input = document.getElementById('userInput').value;
             const resultDiv = document.getElementById('result');
-            const loadingDiv = document.getElementById('loading');
+            const teaIcon = document.getElementById('teaIcon');
 
             if (input.trim() === "") {
-                alert("마음을 조금만 적어주세요.");
+                alert("당신의 마음을 한 마디라도 들려주세요.");
                 return;
             }
 
-            // 상태 초기화
-            isProcessing = true;
-            resultDiv.style.display = 'none';
-            loadingDiv.style.display = 'block';
-
-            // 1.5초 후 답변 출력 (로딩 효과)
-            setTimeout(() => {
-                loadingDiv.style.display = 'none';
-                
-                const randomIndex = Math.floor(Math.random() * messages.length);
-                resultDiv.innerText = messages[randomIndex];
-                
-                resultDiv.style.display = 'block';
-                resultDiv.style.animation = 'fadeInUp 0.6s ease-out forwards';
-                
-                isProcessing = false;
-            }, 1500);
+            // 차 아이콘과 결과 표시
+            teaIcon.style.display = 'block';
+            
+            const randomIndex = Math.floor(Math.random() * messages.length);
+            resultDiv.innerText = messages[randomIndex];
+            resultDiv.style.display = 'block';
         }
     </script>
 </body>
