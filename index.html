@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 한잔 - 마음의 뿌리 찾기</title>
+    <title>마음 한잔 - 깊은 대화</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
 
@@ -36,21 +36,19 @@
         .tea-option { cursor: pointer; padding: 10px; border: 1px solid #d7ccc8; border-radius: 15px; font-size: 0.8rem; background: white; transition: 0.3s; }
         .tea-option.active { background-color: #8d6e63; color: white; border-color: #8d6e63; }
 
-        textarea { width: 100%; height: 120px; padding: 18px; border: 1px solid #d7ccc8; border-radius: 20px; resize: none; box-sizing: border-box; outline: none; background-color: #fcfaf9; font-size: 1rem; }
+        textarea { width: 100%; height: 120px; padding: 18px; border: 1px solid #d7ccc8; border-radius: 20px; resize: none; box-sizing: border-box; outline: none; background-color: #fcfaf9; font-size: 1rem; line-height: 1.6; }
 
         button { margin-top: 15px; padding: 14px 40px; border: none; border-radius: 35px; background: #8d6e63; color: white; cursor: pointer; font-weight: 500; transition: 0.3s; }
-        button:hover { background: #6d4c41; }
 
-        /* 위로 및 성찰 섹션 */
         #resultSection {
             margin-top: 25px; padding: 25px; background: #fdfaf9; border-radius: 20px;
             border: 1px solid #efebe9; display: none; text-align: left; animation: fadeIn 0.8s ease-out;
         }
         .comfort-text { color: #5d4037; font-weight: 500; margin-bottom: 15px; line-height: 1.6; }
-        .ask-more { color: #8d6e63; font-size: 0.9rem; border-top: 1px solid #eee; pt: 15px; padding-top: 15px; }
-        .btn-small { padding: 8px 15px; font-size: 0.8rem; margin-top: 10px; background: #a1887f; border-radius: 15px; }
+        .ask-more { color: #8d6e63; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 15px; }
+        .btn-small { padding: 8px 15px; font-size: 0.8rem; margin-top: 10px; background: #a1887f; border: none; border-radius: 15px; color: white; cursor: pointer; }
         
-        #deepQuestion { margin-top: 15px; padding: 15px; background: #fff; border-radius: 10px; border-left: 4px solid #8d6e63; color: #6d4c41; display: none; font-weight: 500; }
+        #deepQuestion { margin-top: 15px; padding: 18px; background: #fff; border-radius: 10px; border-left: 4px solid #8d6e63; color: #4e342e; display: none; font-weight: 500; line-height: 1.6; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -79,12 +77,12 @@
                 <div class="tea-option" onclick="selectTea('코코아', this)">코코아</div>
             </div>
 
-            <textarea id="userInput" placeholder="오늘 어떤 일이 당신을 힘들게 했나요?"></textarea>
+            <textarea id="userInput" placeholder="누구에게도 하지 못한 말을 이곳에 남겨보세요..."></textarea>
             <button onclick="provideComfort()">마음 나누기</button>
 
             <div id="resultSection">
                 <div id="comfortOutput" class="comfort-text"></div>
-                <div class="ask-more">
+                <div id="questionWrapper" class="ask-more">
                     지금 그 마음... <strong>더 자세히 물어봐도 괜찮을까요?</strong><br>
                     <button class="btn-small" onclick="askDeepQuestion()">네, 이야기할래요</button>
                 </div>
@@ -97,14 +95,29 @@
         let currentUser = "";
         let selectedTea = "녹차";
 
-        const deepQuestions = [
-            "그 상황에서 당신을 가장 힘들게 했던 핵심적인 이유는 무엇이었나요?",
-            "이 고민이 처음 시작된 순간을 기억하시나요? 그때의 기분은 어땠나요?",
-            "이 문제가 해결된다면, 당신의 일상에서 무엇이 가장 먼저 바뀔까요?",
-            "혹시 타인의 시선 때문에 더 힘든 것은 아닐까요? 오직 당신의 마음만 본다면 어떨까요?",
-            "이 일을 겪기 전과 지금, 당신의 생각 중 바뀐 부분이 있을까요?",
-            "만약 당신의 소중한 친구가 똑같은 고민을 한다면, 어떤 말을 해주고 싶나요?"
-        ];
+        // 키워드별 맞춤 성찰 질문 데이터
+        const questionBank = {
+            people: [ // 사람, 친구, 상사, 가족 관련
+                "그 관계에서 당신이 가장 지키고 싶었던 마음은 무엇이었나요?",
+                "상대방의 말 중 어떤 부분이 당신의 마음을 가장 아프게 찔렀나요?",
+                "혹시 그 사람에게 꼭 하고 싶었지만 가슴속에 묻어둔 말이 있을까요?"
+            ],
+            work: [ // 일, 공부, 시험, 성공 관련
+                "당신을 가장 지치게 하는 건 '해야 할 일'인가요, 아니면 '잘해야 한다는 압박'인가요?",
+                "지금의 이 노력이 당신이 진심으로 원하는 미래와 맞닿아 있나요?",
+                "잠시 멈춘다면, 당신의 삶에서 무엇이 무너질까 봐 가장 두려우신가요?"
+            ],
+            self: [ // 나, 성격, 자책, 우울 관련
+                "스스로에게 너무 엄격한 잣대를 대고 있는 것은 아닐까요?",
+                "오늘 하루 중 아주 짧게라도 당신이 스스로를 대견하게 여겼던 순간이 있었나요?",
+                "당신을 힘들게 하는 그 생각은 '사실'인가요, 아니면 마음이 만들어낸 '걱정'인가요?"
+            ],
+            general: [ // 기본 질문
+                "그 일이 당신의 일상을 얼마나 차지하고 있나요?",
+                "이 고민의 뿌리를 따라가면, 어떤 감정이 가장 먼저 나타나나요?",
+                "지금 가장 필요한 건 해결책일까요, 아니면 온전한 휴식일까요?"
+            ]
+        };
 
         function login() {
             const name = document.getElementById('userName').value;
@@ -123,26 +136,31 @@
 
         function provideComfort() {
             const input = document.getElementById('userInput').value;
-            if (!input) return alert("당신의 마음을 조금만 들려주세요.");
+            if (!input) return alert("당신의 마음을 한 마디만 들려주세요.");
 
             const resultSection = document.getElementById('resultSection');
             const comfortOutput = document.getElementById('comfortOutput');
             const deepQuestionDiv = document.getElementById('deepQuestion');
 
-            // 초기화
             deepQuestionDiv.style.display = 'none';
-            
-            // 위로 메시지 (차 종류와 연계)
-            comfortOutput.innerText = `따뜻한 ${selectedTea} 한 잔을 건넵니다. 적어주신 고민을 읽으니 당신이 얼마나 애쓰고 있는지 느껴져요. 잠시 숨을 고르며 이 차의 온기를 느껴보세요.`;
-            
+            comfortOutput.innerText = `따뜻한 ${selectedTea} 한 잔을 건넵니다. 당신의 글에서 그동안 얼마나 참아왔을지, 얼마나 치열하게 고민했을지가 느껴져요. 혼자서 짊어지느라 정말 애쓰셨습니다.`;
             resultSection.style.display = 'block';
         }
 
         function askDeepQuestion() {
+            const input = document.getElementById('userInput').value;
             const deepQuestionDiv = document.getElementById('deepQuestion');
-            const randomIndex = Math.floor(Math.random() * deepQuestions.length);
+            let category = "general";
+
+            // 간단한 키워드 매칭 로직
+            if (input.match(/사람|친구|상사|동료|가족|엄마|아빠|말|관계/)) category = "people";
+            else if (input.match(/일|공부|시험|성적|취업|회사|성공|과제/)) category = "work";
+            else if (input.match(/나|내|자신|성격|자책|후회|바보/)) category = "self";
+
+            const selectedQuestions = questionBank[category];
+            const randomIndex = Math.floor(Math.random() * selectedQuestions.length);
             
-            deepQuestionDiv.innerText = "💡 " + deepQuestions[randomIndex];
+            deepQuestionDiv.innerText = "💡 " + selectedQuestions[randomIndex];
             deepQuestionDiv.style.display = 'block';
             deepQuestionDiv.style.animation = 'fadeIn 0.5s ease-out';
         }
