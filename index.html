@@ -3,57 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 한잔 - 깊은 대화</title>
+    <title>마음 한잔 - 근원 찾기</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-brown: #6d4c41;
+            --soft-brown: #8d6e63;
+            --bg-color: #fdfaf9;
+        }
 
         body {
             margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            background: linear-gradient(180deg, #fdfbfb 0%, #ebedee 100%);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             font-family: 'Noto Sans KR', sans-serif;
             color: #4e342e;
         }
 
         .container {
-            width: 90%; max-width: 480px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px; border-radius: 40px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.08);
-            text-align: center;
+            width: 95%; max-width: 500px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px; border-radius: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            position: relative; overflow: hidden;
         }
 
-        #loginSection { margin-bottom: 20px; }
-        .input-field { padding: 12px; border: 1px solid #d7ccc8; border-radius: 10px; width: 70%; margin-bottom: 10px; outline: none; }
+        /* Progress Bar */
+        .progress-container { width: 100%; height: 4px; background: #eee; margin-bottom: 20px; border-radius: 2px; display: none; }
+        #progressBar { width: 0%; height: 100%; background: var(--soft-brown); transition: width 0.5s; border-radius: 2px; }
 
-        #mainContent { display: none; }
+        h1 { font-size: 1.6rem; color: var(--primary-brown); margin-bottom: 10px; }
+        .subtitle { font-size: 0.9rem; color: #a1887f; margin-bottom: 25px; }
 
-        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #6d4c41; font-weight: 700; }
-        .subtitle { font-size: 0.95rem; color: #8d6e63; margin-bottom: 20px; }
+        /* Tea Selector */
+        .tea-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+        .tea-option { cursor: pointer; padding: 12px; border: 1px solid #efebe9; border-radius: 12px; font-size: 0.85rem; transition: 0.3s; background: #fff; }
+        .tea-option.active { background: var(--soft-brown); color: white; border-color: var(--soft-brown); }
 
-        .tea-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 20px; }
-        .tea-option { cursor: pointer; padding: 10px; border: 1px solid #d7ccc8; border-radius: 15px; font-size: 0.8rem; background: white; transition: 0.3s; }
-        .tea-option.active { background-color: #8d6e63; color: white; border-color: #8d6e63; }
-
-        textarea { width: 100%; height: 100px; padding: 18px; border: 1px solid #d7ccc8; border-radius: 20px; resize: none; box-sizing: border-box; outline: none; background-color: #fcfaf9; font-size: 1rem; line-height: 1.6; transition: all 0.3s; }
-
-        button { margin-top: 15px; padding: 14px 40px; border: none; border-radius: 35px; background: #8d6e63; color: white; cursor: pointer; font-weight: 500; transition: 0.3s; }
-        button:disabled { background: #d7ccc8; cursor: default; }
-
-        #resultSection {
-            margin-top: 25px; padding: 20px; background: #fdfaf9; border-radius: 20px;
-            border: 1px solid #efebe9; display: none; text-align: left; animation: fadeIn 0.8s ease-out;
-        }
-        .comfort-text { color: #5d4037; font-weight: 500; margin-bottom: 10px; line-height: 1.6; font-size: 0.95rem; }
-        .ask-more { color: #8d6e63; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 15px; text-align: center; }
-        .btn-small { padding: 8px 15px; font-size: 0.8rem; margin-top: 10px; background: #a1887f; border: none; border-radius: 15px; color: white; cursor: pointer; }
+        /* Input Area */
+        #chatDisplay { max-height: 200px; overflow-y: auto; margin-bottom: 20px; text-align: left; padding: 10px; border-radius: 10px; background: #fcfaf9; display: none; }
+        .msg { margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; padding: 10px; border-radius: 10px; }
+        .ai-msg { background: #efebe9; color: #4e342e; border-bottom-left-radius: 2px; }
         
-        #deepQuestion { margin-top: 10px; padding: 15px; background: #fff; border-radius: 15px; border-left: 4px solid #8d6e63; color: #4e342e; font-weight: 500; line-height: 1.6; box-shadow: 0 4px 10px rgba(0,0,0,0.03); }
+        textarea { width: 100%; height: 110px; padding: 15px; border: 1.5px solid #d7ccc8; border-radius: 18px; resize: none; box-sizing: border-box; outline: none; font-size: 1rem; transition: 0.3s; }
+        textarea:focus { border-color: var(--soft-brown); box-shadow: 0 0 8px rgba(141, 110, 99, 0.2); }
 
-        .count-badge { font-size: 0.7rem; color: #a1887f; margin-bottom: 5px; display: block; }
+        button { width: 100%; margin-top: 15px; padding: 15px; border: none; border-radius: 15px; background: var(--soft-brown); color: white; cursor: pointer; font-weight: 500; font-size: 1rem; }
+        button:hover { background: var(--primary-brown); }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Final Result */
+        #analysisResult { display: none; text-align: left; background: #fff; padding: 20px; border: 1px dashed var(--soft-brown); border-radius: 20px; margin-top: 20px; animation: fadeIn 1s; }
+        .root-cause { font-size: 1.1rem; color: #d32f2f; font-weight: 700; display: block; margin: 10px 0; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
@@ -61,170 +65,123 @@
     <div class="container">
         <div id="loginSection">
             <h1>마음 한잔</h1>
-            <p class="subtitle">오셨나요? 당신의 이름을 알려주세요.</p>
-            <input type="text" id="userName" class="input-field" placeholder="이름을 입력하세요">
-            <br>
-            <button onclick="login()">입장하기</button>
+            <p class="subtitle">오롯이 당신만을 위한 대화의 공간입니다.</p>
+            <input type="text" id="userName" style="width:80%; padding:12px; border:1px solid #ddd; border-radius:10px;" placeholder="이름 혹은 별명">
+            <button onclick="startApp()" style="margin-top:20px;">대화 시작하기</button>
         </div>
 
-        <div id="mainContent">
-            <h1 id="welcomeMsg">환영합니다</h1>
-            <p class="subtitle">오늘 당신의 마음을 채워줄 차를 골라보세요.</p>
+        <div id="mainContent" style="display:none;">
+            <div class="progress-container" id="pContainer"><div id="progressBar"></div></div>
+            <h1 id="welcomeTitle">마음 한잔</h1>
+            <p id="mainSubtitle" class="subtitle">먼저, 지금 마시고 싶은 차를 골라주세요.</p>
 
-            <div class="tea-selector">
-                <div class="tea-option active" onclick="selectTea('녹차', this)">녹차</div>
-                <div class="tea-option" onclick="selectTea('홍차', this)">홍차</div>
-                <div class="tea-option" onclick="selectTea('허브차', this)">허브차</div>
-                <div class="tea-option" onclick="selectTea('유자차', this)">유자차</div>
-                <div class="tea-option" onclick="selectTea('보리차', this)">보리차</div>
-                <div class="tea-option" onclick="selectTea('코코아', this)">코코아</div>
-            </div>
-
-            <div id="chatArea">
-                <textarea id="userInput" placeholder="누구에게도 하지 못한 말을 이곳에 남겨보세요..."></textarea>
-                <button id="mainBtn" onclick="provideComfort()">마음 나누기</button>
-            </div>
-
-            <div id="resultSection">
-                <span id="stepCount" class="count-badge"></span>
-                <div id="comfortOutput" class="comfort-text"></div>
-                <div id="deepQuestion"></div>
-                
-                <div id="questionWrapper" class="ask-more">
-                    <p id="promptText" style="margin: 0;">지금 그 마음... <strong>더 자세히 물어봐도 괜찮을까요?</strong></p>
-                    <button id="deepBtn" class="btn-small" onclick="askDeepQuestion()">네, 이야기할래요</button>
+            <div id="step1">
+                <div class="tea-selector">
+                    <div class="tea-option active" onclick="selectTea('말차', this)">말차</div>
+                    <div class="tea-option" onclick="selectTea('우롱차', this)">우롱차</div>
+                    <div class="tea-option" onclick="selectTea('카모마일', this)">카모마일</div>
                 </div>
+            </div>
+
+            <div id="chatDisplay"></div>
+            
+            <textarea id="userInput" placeholder="요즘 당신의 마음을 무겁게 하는 것은 무엇인가요?"></textarea>
+            <button id="actionBtn" onclick="processStep()">이야기 나누기</button>
+            
+            <div id="analysisResult">
+                <strong style="color:var(--soft-brown);">[마음의 근원 분석 보고서]</strong>
+                <p id="analysisText"></p>
+                <div id="rootCauseDisplay"></div>
+                <button onclick="location.reload()" style="background:#a1887f; font-size:0.8rem; padding:8px;">새로운 대화 시작</button>
             </div>
         </div>
     </div>
 
     <script>
-        let currentUser = "";
-        let selectedTea = "녹차";
-        let questionCount = 0;
-        const MAX_QUESTIONS = 3;
-        let userAnswers = []; // 사용자의 답변을 저장하여 원인 분석에 활용
+        let step = 0;
+        let userName = "";
+        let selectedTea = "말차";
+        let responses = [];
+        const MAX_STEPS = 3;
 
-        const questionBank = {
-            people: [
-                "그 관계에서 당신이 가장 지키고 싶었던 마음은 무엇이었나요?",
-                "상대방의 말 중 어떤 부분이 당신의 마음을 가장 아프게 찔렀나요?",
-                "상처를 준 그 사람에게 사실은 어떤 대답을 듣고 싶었나요?"
-            ],
-            work: [
-                "당신을 가장 지치게 하는 건 '해야 할 일'인가요, 아니면 '잘해야 한다는 압박'인가요?",
-                "지금의 노력이 당신이 진심으로 원하는 미래와 맞닿아 있나요?",
-                "잠시 멈춘다면, 당신의 삶에서 무엇이 무너질까 봐 가장 두려우신가요?"
-            ],
-            self: [
-                "스스로에게 너무 엄격한 잣대를 대고 있는 것은 아닐까요?",
-                "오늘 하루 중 아주 짧게라도 당신이 스스로를 대견하게 여겼던 순간이 있었나요?",
-                "당신을 힘들게 하는 그 생각은 '사실'인가요, 아니면 '불안이 만든 상상'인가요?"
-            ],
-            general: [
-                "그 고민의 뿌리를 따라가면, 어떤 감정이 가장 먼저 나타나나요?",
-                "지금 가장 필요한 건 해결책일까요, 아니면 온전한 휴식일까요?",
-                "이 상황이 해결된다면, 당신의 표정은 어떻게 변할까요?"
-            ]
-        };
-
-        function login() {
-            const name = document.getElementById('userName').value;
-            if (!name) return alert("이름을 입력해주세요.");
-            currentUser = name;
+        function startApp() {
+            userName = document.getElementById('userName').value || "손님";
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('welcomeMsg').innerText = `${name}님의 마음 한잔`;
+            document.getElementById('welcomeTitle').innerText = `${userName}님의 티타임`;
         }
 
-        function selectTea(name, el) {
-            selectedTea = name;
+        function selectTea(tea, el) {
+            selectedTea = tea;
             document.querySelectorAll('.tea-option').forEach(opt => opt.classList.remove('active'));
             el.classList.add('active');
         }
 
-        function provideComfort() {
+        function addChat(role, text) {
+            const display = document.getElementById('chatDisplay');
+            display.style.display = 'block';
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `msg ${role}-msg`;
+            msgDiv.innerText = text;
+            display.appendChild(msgDiv);
+            display.scrollTop = display.scrollHeight;
+        }
+
+        function processStep() {
             const input = document.getElementById('userInput').value;
-            if (!input) return alert("당신의 마음을 한 마디만 들려주세요.");
-
-            userAnswers.push(input); // 첫 입력 저장
+            if (!input) { alert("잠시라도 좋으니 마음을 적어주세요."); return; }
             
-            const resultSection = document.getElementById('resultSection');
-            const comfortOutput = document.getElementById('comfortOutput');
-            const deepQuestionDiv = document.getElementById('deepQuestion');
-
-            comfortOutput.innerText = `따뜻한 ${selectedTea} 한 잔을 건넵니다. 당신의 글에서 그동안 얼마나 참아왔을지 느껴져요. 혼자서 짊어지느라 정말 애쓰셨습니다.`;
-            resultSection.style.display = 'block';
-            deepQuestionDiv.style.display = 'none';
-            
-            // UI 전환: 입력창을 질문 아래로 자연스럽게 유도
-            document.getElementById('mainBtn').style.display = 'none';
+            responses.push(input);
             document.getElementById('userInput').value = "";
-            document.getElementById('userInput').placeholder = "이곳에 당신의 이야기를 이어가주세요...";
-        }
-
-        function askDeepQuestion() {
-            const input = document.getElementById('userInput').value;
+            document.getElementById('pContainer').style.display = 'block';
             
-            // 질문 단계가 진행 중일 때 입력 검사
-            if (questionCount > 0 && !input) {
-                return alert("답변을 입력해주시면 대화를 계속 이어갈 수 있어요.");
-            }
-            if(input) userAnswers.push(input);
+            step++;
+            const progress = (step / (MAX_STEPS + 1)) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
 
-            questionCount++;
-
-            if (questionCount <= MAX_QUESTIONS) {
-                document.getElementById('stepCount').innerText = `깊은 대화 단계: ${questionCount} / ${MAX_QUESTIONS}`;
-                
-                let category = analyzeCategory(userAnswers.join(" "));
-                const questions = questionBank[category];
-                const currentQ = questions[questionCount - 1];
-
-                document.getElementById('comfortOutput').innerText = "조금 더 깊이 들여다볼까요? 당신의 이야기에 귀 기울이고 있어요.";
-                const qDiv = document.getElementById('deepQuestion');
-                qDiv.innerText = "💡 " + currentQ;
-                qDiv.style.display = 'block';
-                
-                document.getElementById('userInput').value = "";
-                document.getElementById('userInput').focus();
-                document.getElementById('deepBtn').innerText = "다음 이야기 들려주기";
-                document.getElementById('promptText').innerHTML = "생각나는 대로 천천히 적어주셔도 괜찮아요.";
-
-                if (questionCount === MAX_QUESTIONS) {
-                    document.getElementById('deepBtn').innerText = "대화 마무리하기";
-                }
+            if (step === 1) {
+                document.getElementById('step1').style.display = 'none';
+                document.getElementById('mainSubtitle').innerText = "당신의 깊은 속마음을 따라가는 중입니다.";
+                addChat('ai', `따뜻한 ${selectedTea} 한 잔 드릴게요. 그 일이 당신을 구체적으로 어떻게 아프게 하나요? 조금 더 깊이 말씀해 주시겠어요?`);
+            } else if (step === 2) {
+                addChat('ai', "그 감정의 가장 밑바닥에는 어떤 두려움이나 소망이 숨어있을까요? 아주 솔직해져도 괜찮습니다.");
+            } else if (step === 3) {
+                addChat('ai', "마지막으로 묻고 싶어요. 만약 그 상황이 없었더라면, 당신은 어떤 모습으로 웃고 있었을까요?");
+                document.getElementById('actionBtn').innerText = "나의 근원 확인하기";
             } else {
-                finishConversation();
+                showFinalAnalysis();
             }
         }
 
-        function analyzeCategory(text) {
-            if (text.match(/사람|친구|상사|동료|가족|엄마|아빠|말|관계/)) return "people";
-            if (text.match(/일|공부|시험|성적|취업|회사|성공|과제/)) return "work";
-            if (text.match(/나|내|자신|성격|자책|후회|바보/)) return "self";
-            return "general";
-        }
+        function showFinalAnalysis() {
+            document.getElementById('chatDisplay').style.display = 'none';
+            document.getElementById('userInput').style.display = 'none';
+            document.getElementById('actionBtn').style.display = 'none';
+            document.getElementById('mainSubtitle').innerText = "대화를 통해 발견한 당신의 진심입니다.";
 
-        function finishConversation() {
-            const finalComfort = document.getElementById('comfortOutput');
-            const qDiv = document.getElementById('deepQuestion');
-            const wrapper = document.getElementById('questionWrapper');
-            const input = document.getElementById('userInput');
-
-            // 간단한 원인 분석 로직 (키워드 기반)
-            let cause = "마음속 깊은 곳의 불안";
-            let fullText = userAnswers.join(" ");
-            if(fullText.includes("사람") || fullText.includes("말")) cause = "타인의 시선과 관계에서 오는 무게";
-            else if(fullText.includes("일") || fullText.includes("잘")) cause = "완벽해야 한다는 책임감";
-            else if(fullText.includes("후회") || fullText.includes("나")) cause = "스스로를 향한 높은 기대치";
-
-            finalComfort.innerHTML = `<strong>오늘의 대화 요약</strong><br>이야기를 나누어보니 당신의 상처는 <u>'${cause}'</u>에서 시작된 것 같네요.`;
-            qDiv.innerText = "충분히 많은 이야기를 나누어 주셨습니다. 오늘 나눈 말들이 당신의 마음 한구석을 조금이나마 가볍게 해주었기를 바랍니다. 당신은 충분히 잘하고 있어요.";
+            const analysisResult = document.getElementById('analysisResult');
+            const analysisText = document.getElementById('analysisText');
+            const rootDisplay = document.getElementById('rootCauseDisplay');
             
-            wrapper.innerHTML = "<button class='btn-small' onclick='location.reload()'>처음으로 돌아가기</button>";
-            input.disabled = true;
-            input.placeholder = "오늘의 대화가 평안히 마무리되었습니다.";
+            const fullText = responses.join(" ");
+            
+            // 심리 근원 로직 (키워드 매칭 확장)
+            let result = {
+                title: "인정받고 싶은 마음",
+                desc: "당신의 고통은 사실 '나의 가치를 확인받지 못할까 봐' 하는 두려움에서 시작된 것 같습니다. 스스로를 증명하려 애쓰지 않아도 당신은 이미 소중합니다."
+            };
+
+            if (fullText.match(/혼자|버려진|외롭|무관심|연락/)) {
+                result = { title: "연결되고 싶은 갈망", desc: "누군가에게 온전히 이해받고 싶어 하는 마음이 상처의 뿌리에 있습니다. 외로움은 당신이 사랑이 많은 사람이기 때문에 느끼는 감정입니다." };
+            } else if (fullText.match(/실수|완벽|실패|망칠까봐|공부|성적/)) {
+                result = { title: "자신을 향한 높은 잣대", desc: "당신의 상처는 외부가 아닌 '스스로를 용서하지 못하는 마음'에서 기인합니다. 가끔은 넘어져도 괜찮다는 허락이 당신에게 가장 필요해 보입니다." };
+            } else if (fullText.match(/상처|욕|비난|사람들|눈치/)) {
+                result = { title: "보호받고 싶은 안전감", desc: "주변 환경이나 타인으로부터 나를 지키고 싶은 방어 기제가 상처의 원인입니다. 당신의 예민함은 사실 자신을 지키기 위한 소중한 안테나입니다." };
+            }
+
+            analysisText.innerText = `${userName}님, 대화를 통해 본 당신의 상처의 근원은...`;
+            rootDisplay.innerHTML = `<span class="root-cause">"${result.title}"</span><p style="font-size:0.9rem; line-height:1.6;">${result.desc}</p>`;
+            analysisResult.style.display = 'block';
         }
     </script>
 </body>
