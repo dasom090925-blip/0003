@@ -16,7 +16,7 @@
 
         body {
             margin: 0; padding: 0;
-            background-color: #2c2c2c; /* 어두운 배경으로 몰입감 증대 */
+            background-color: #2c2c2c;
             font-family: 'Noto Serif KR', serif;
             color: var(--ink);
             display: flex; justify-content: center; align-items: center;
@@ -26,20 +26,21 @@
         .tea-house {
             width: 100%; max-width: 450px; height: 95vh;
             background-color: var(--paper);
-            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* 한지 느낌 */
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             display: flex; flex-direction: column;
             position: relative; border: 8px solid #3e3e3e;
+            overflow: hidden;
         }
 
         header {
             padding: 40px 20px 20px; text-align: center;
             border-bottom: 1px double var(--wood);
+            flex-shrink: 0;
         }
         header h1 { font-weight: 700; font-size: 1.6rem; letter-spacing: 0.2rem; margin: 0; }
         header p { font-size: 0.85rem; color: var(--tea-green); margin-top: 10px; }
 
-        /* 대화 공간 */
         #chatFlow {
             flex: 1; padding: 30px 20px; overflow-y: auto;
             display: flex; flex-direction: column; gap: 25px;
@@ -50,13 +51,12 @@
         .dialogue { opacity: 0; animation: fadeIn 1.2s forwards; line-height: 1.8; }
         .master { text-align: left; padding-right: 20%; position: relative; }
         .master::before { content: "茶"; color: var(--tea-green); font-size: 0.7rem; display: block; margin-bottom: 5px; }
-        
         .guest { text-align: right; padding-left: 20%; color: var(--wood); font-style: italic; }
 
-        /* 입력창 */
         .ink-tray {
             padding: 30px 20px; border-top: 1px solid rgba(169, 132, 103, 0.3);
             background: rgba(255,255,255,0.3);
+            flex-shrink: 0;
         }
         textarea {
             width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--wood);
@@ -64,9 +64,7 @@
             resize: none; color: var(--ink); padding-bottom: 10px;
         }
 
-        .submit-btn {
-            margin-top: 15px; text-align: right;
-        }
+        .submit-btn { margin-top: 15px; text-align: right; }
         .submit-btn button {
             background: transparent; border: 1px solid var(--wood); padding: 8px 20px;
             font-family: 'Noto Serif KR', serif; color: var(--wood); cursor: pointer;
@@ -74,14 +72,16 @@
         }
         .submit-btn button:hover { background: var(--wood); color: white; }
 
-        /* 결과 화면 */
+        /* 결과 화면 (다시 시작을 위해 스타일 수정) */
         #scrollResult {
-            position: absolute; inset: 0; background: var(--paper);
-            display: none; flex-direction: column; justify-content: center;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--paper);
+            display: none; /* 기본 숨김 */
+            flex-direction: column; justify-content: center;
             align-items: center; padding: 40px; text-align: center; z-index: 100;
+            box-sizing: border-box;
         }
-        .scroll-content { border: 1px solid var(--wood); padding: 30px; position: relative; }
-        .scroll-content::after { content: ""; position: absolute; inset: 5px; border: 1px solid var(--wood); opacity: 0.3; }
+        .scroll-content { border: 1px solid var(--wood); padding: 30px; position: relative; background: rgba(255,255,255,0.2); }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -98,7 +98,7 @@
             <div class="dialogue master">어서 오세요. 찻물이 알맞게 익었습니다.<br>오늘은 어떤 차를 내어드릴까요? 당신의 기분을 닮은 차 이름을 적어주세요.</div>
         </div>
 
-        <div class="ink-tray">
+        <div class="ink-tray" id="inputContainer">
             <textarea id="guestInput" placeholder="붓을 들듯 천천히 적어주세요..." rows="1"></textarea>
             <div class="submit-btn">
                 <button onclick="nextStep()">이야기 올리기</button>
@@ -109,7 +109,7 @@
             <div class="scroll-content">
                 <p style="font-size: 0.8rem; color: var(--tea-green); margin-bottom: 20px;">[ 마음의 뿌리를 읽다 ]</p>
                 <div id="rootCauseText" style="line-height: 2; font-size: 1.05rem;"></div>
-                <button onclick="location.reload()" style="margin-top: 40px; background: none; border: none; color: var(--wood); cursor: pointer; text-decoration: underline;">다시 문을 두드리기</button>
+                <button onclick="resetTeaHouse()" style="margin-top: 40px; background: none; border: none; color: var(--wood); cursor: pointer; text-decoration: underline; font-family: inherit;">다시 문을 두드리기</button>
             </div>
         </div>
     </div>
@@ -119,6 +119,8 @@
         let story = [];
         const flow = document.getElementById('chatFlow');
         const input = document.getElementById('guestInput');
+        const resultArea = document.getElementById('scrollResult');
+        const inputContainer = document.getElementById('inputContainer');
 
         function addDialogue(role, text) {
             const div = document.createElement('div');
@@ -137,6 +139,9 @@
             input.value = "";
             step++;
 
+            // 입력창 높이 초기화
+            input.style.height = 'auto';
+
             setTimeout(() => {
                 if (step === 1) {
                     addDialogue('master', `${val}... 향이 참 깊군요. <br><br>차 한 모금 넘기듯 묻겠습니다. 요즘 당신의 가슴 한구석을 자꾸만 건드리는 '그 일'은 무엇인가요?`);
@@ -151,16 +156,15 @@
         }
 
         function revealSource() {
-            const resultArea = document.getElementById('scrollResult');
             const resultText = document.getElementById('rootCauseText');
             const all = story.join(" ");
 
             let analysis = "";
-            if (all.match(/일|공부|성공|잘|못|실수/)) {
+            if (all.match(/일|공부|성공|잘|못|실수|과제|취업/)) {
                 analysis = "당신은 <b>'자신에게 너무나도 엄격한 스승'</b>을 마음속에 두고 계시군요. <br>상처의 근원은 밖이 아니라, 스스로를 다그치는 그 높은 기준에 있습니다. <br>오늘은 당신의 서툰 모습조차 따뜻한 찻물로 안아주시길.";
-            } else if (all.match(/사람|친구|그애|말|상처|버린/)) {
+            } else if (all.match(/사람|친구|그애|말|상처|버린|연애|이별/)) {
                 analysis = "당신의 상처는 <b>'누구보다 깊은 사랑을 주고받고 싶은 갈망'</b>에서 피어났습니다. <br>뿌리가 깊은 나무일수록 바람에 흔들리는 법이니, <br>사람에 흔들리는 당신은 그만큼 뿌리가 깊은 사람이라는 뜻이기도 합니다.";
-            } else if (all.match(/나|자신|왜|바보|싫/)) {
+            } else if (all.match(/나|자신|왜|바보|싫|내탓/)) {
                 analysis = "당신의 마음은 지금 <b>'나 자신과의 화해'</b>를 간절히 기다리고 있습니다. <br>상처의 근원은 스스로를 미워하는 작은 습관들이 쌓인 것이겠지요. <br>찻잔 속의 당신을 가만히 들여다보며, '미안하다'고 한마디 건네보세요.";
             } else {
                 analysis = "당신은 그저 <b>'온전한 고요'</b>를 잊고 지내오셨군요. <br>상처의 원인이 무엇이든, 지금 당신에게 필요한 것은 답을 찾는 것이 아니라 <br>찻잔의 온기처럼 당신을 따뜻하게 덮어줄 시간입니다.";
@@ -168,6 +172,22 @@
 
             resultText.innerHTML = analysis;
             resultArea.style.display = 'flex';
+        }
+
+        // 초기화 함수: 모든 상태를 처음으로 돌림
+        function resetTeaHouse() {
+            // 1. 데이터 초기화
+            step = 0;
+            story = [];
+            
+            // 2. UI 초기화
+            resultArea.style.display = 'none';
+            flow.innerHTML = '<div class="dialogue master">어서 오세요. 찻물이 알맞게 익었습니다.<br>오늘은 어떤 차를 내어드릴까요? 당신의 기분을 닮은 차 이름을 적어주세요.</div>';
+            input.value = "";
+            input.style.height = 'auto';
+            
+            // 3. 입력창 활성화 (혹시 비활성화했다면)
+            input.disabled = false;
         }
 
         // 입력창 자동 높이 조절
