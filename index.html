@@ -3,199 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 한잔 - 당신의 깊은 곳으로</title>
+    <title>심야 찻집 - 마음 한잔</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500&family=Noto+Sans+KR:wght@300;400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500;700&display=swap');
 
         :root {
-            --warm-beige: #f9f7f2;
-            --soft-brown: #8d6e63;
-            --deep-brown: #5d4037;
-            --accent-color: #a1887f;
+            --paper: #f4f1ea;
+            --ink: #3c3836;
+            --tea-green: #6b705c;
+            --wood: #a98467;
         }
 
         body {
             margin: 0; padding: 0;
-            background-color: var(--warm-beige);
-            font-family: 'Noto Sans KR', sans-serif;
-            color: var(--deep-brown);
+            background-color: #2c2c2c; /* 어두운 배경으로 몰입감 증대 */
+            font-family: 'Noto Serif KR', serif;
+            color: var(--ink);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
         }
 
-        .container {
-            width: 100%; max-width: 450px; height: 90vh;
-            background: #fff; border-radius: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; overflow: hidden;
-            position: relative;
-        }
-
-        /* 헤더 */
-        header {
-            padding: 25px; border-bottom: 1px solid #f0eeeb;
-            text-align: center; background: #fff;
-        }
-        header h1 { 
-            font-family: 'Noto Serif KR', serif; font-size: 1.4rem; margin: 0; color: var(--deep-brown); 
-        }
-
-        /* 채팅 영역 */
-        #chatDisplay {
-            flex: 1; padding: 20px; overflow-y: auto;
-            display: flex; flex-direction: column; gap: 15px;
-            scroll-behavior: smooth; background: #fafaf9;
-        }
-
-        .bubble {
-            max-width: 80%; padding: 12px 18px; border-radius: 20px;
-            font-size: 0.95rem; line-height: 1.6; position: relative;
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-        .ai {
-            align-self: flex-start; background: #fff;
-            border: 1px solid #efebe9; border-bottom-left-radius: 2px;
-        }
-        .user {
-            align-self: flex-end; background: var(--soft-brown);
-            color: #fff; border-bottom-right-radius: 2px;
-        }
-
-        /* 입력 영역 */
-        .input-area {
-            padding: 20px; background: #fff; border-top: 1px solid #f0eeeb;
+        .tea-house {
+            width: 100%; max-width: 450px; height: 95vh;
+            background-color: var(--paper);
+            background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png'); /* 한지 느낌 */
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
             display: flex; flex-direction: column;
+            position: relative; border: 8px solid #3e3e3e;
+        }
+
+        header {
+            padding: 40px 20px 20px; text-align: center;
+            border-bottom: 1px double var(--wood);
+        }
+        header h1 { font-weight: 700; font-size: 1.6rem; letter-spacing: 0.2rem; margin: 0; }
+        header p { font-size: 0.85rem; color: var(--tea-green); margin-top: 10px; }
+
+        /* 대화 공간 */
+        #chatFlow {
+            flex: 1; padding: 30px 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 25px;
+            scrollbar-width: none;
+        }
+        #chatFlow::-webkit-scrollbar { display: none; }
+
+        .dialogue { opacity: 0; animation: fadeIn 1.2s forwards; line-height: 1.8; }
+        .master { text-align: left; padding-right: 20%; position: relative; }
+        .master::before { content: "茶"; color: var(--tea-green); font-size: 0.7rem; display: block; margin-bottom: 5px; }
+        
+        .guest { text-align: right; padding-left: 20%; color: var(--wood); font-style: italic; }
+
+        /* 입력창 */
+        .ink-tray {
+            padding: 30px 20px; border-top: 1px solid rgba(169, 132, 103, 0.3);
+            background: rgba(255,255,255,0.3);
         }
         textarea {
-            width: 100%; height: 80px; border: none; outline: none;
-            resize: none; font-size: 1rem; color: var(--deep-brown);
-            font-family: inherit;
+            width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--wood);
+            outline: none; font-family: 'Noto Serif KR', serif; font-size: 1rem;
+            resize: none; color: var(--ink); padding-bottom: 10px;
         }
-        .controls {
-            display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
-        }
-        .step-info { font-size: 0.75rem; color: var(--accent-color); }
-        
-        button {
-            padding: 10px 25px; border: none; border-radius: 25px;
-            background: var(--soft-brown); color: white; cursor: pointer;
-            font-weight: 500; transition: 0.3s;
-        }
-        button:disabled { background: #d7ccc8; opacity: 0.6; }
 
-        /* 결과창 */
-        #finalResult {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; display: none; z-index: 10;
-            flex-direction: column; justify-content: center; align-items: center;
-            padding: 40px; box-sizing: border-box; text-align: center;
-            animation: slideUp 0.6s ease-out;
+        .submit-btn {
+            margin-top: 15px; text-align: right;
         }
+        .submit-btn button {
+            background: transparent; border: 1px solid var(--wood); padding: 8px 20px;
+            font-family: 'Noto Serif KR', serif; color: var(--wood); cursor: pointer;
+            transition: 0.3s;
+        }
+        .submit-btn button:hover { background: var(--wood); color: white; }
+
+        /* 결과 화면 */
+        #scrollResult {
+            position: absolute; inset: 0; background: var(--paper);
+            display: none; flex-direction: column; justify-content: center;
+            align-items: center; padding: 40px; text-align: center; z-index: 100;
+        }
+        .scroll-content { border: 1px solid var(--wood); padding: 30px; position: relative; }
+        .scroll-content::after { content: ""; position: absolute; inset: 5px; border: 1px solid var(--wood); opacity: 0.3; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="tea-house">
         <header>
-            <h1 id="title">마음 한잔</h1>
+            <h1>心夜 찻집</h1>
+            <p>달빛 아래, 당신의 마음을 우려냅니다.</p>
         </header>
 
-        <div id="chatDisplay">
-            <div class="bubble ai">안녕하세요. 오늘 하루는 어떠셨나요? <br>차 한 잔을 내어드리고 싶어요. 지금 어떤 차가 생각나시나요? (녹차, 홍차, 카모마일 등)</div>
+        <div id="chatFlow">
+            <div class="dialogue master">어서 오세요. 찻물이 알맞게 익었습니다.<br>오늘은 어떤 차를 내어드릴까요? 당신의 기분을 닮은 차 이름을 적어주세요.</div>
         </div>
 
-        <div class="input-area" id="inputZone">
-            <textarea id="userInput" placeholder="편하게 적어주세요..."></textarea>
-            <div class="controls">
-                <span id="stepCount" class="step-info">대화의 시작</span>
-                <button id="sendBtn" onclick="handleSend()">보내기</button>
+        <div class="ink-tray">
+            <textarea id="guestInput" placeholder="붓을 들듯 천천히 적어주세요..." rows="1"></textarea>
+            <div class="submit-btn">
+                <button onclick="nextStep()">이야기 올리기</button>
             </div>
         </div>
 
-        <div id="finalResult">
-            <div style="font-family: 'Noto Serif KR', serif; margin-bottom: 20px; font-size: 1.2rem;">오늘의 마음 정리</div>
-            <div id="analysisText" style="line-height: 1.8; color: #5d4037; margin-bottom: 30px;"></div>
-            <button onclick="location.reload()" style="background: none; color: var(--accent-color); text-decoration: underline;">다시 차 한 잔 마시기</button>
+        <div id="scrollResult">
+            <div class="scroll-content">
+                <p style="font-size: 0.8rem; color: var(--tea-green); margin-bottom: 20px;">[ 마음의 뿌리를 읽다 ]</p>
+                <div id="rootCauseText" style="line-height: 2; font-size: 1.05rem;"></div>
+                <button onclick="location.reload()" style="margin-top: 40px; background: none; border: none; color: var(--wood); cursor: pointer; text-decoration: underline;">다시 문을 두드리기</button>
+            </div>
         </div>
     </div>
 
     <script>
         let step = 0;
-        let logs = [];
-        const chatDisplay = document.getElementById('chatDisplay');
-        const userInput = document.getElementById('userInput');
-        const stepCount = document.getElementById('stepCount');
+        let story = [];
+        const flow = document.getElementById('chatFlow');
+        const input = document.getElementById('guestInput');
 
-        function addBubble(type, text) {
-            const bubble = document.createElement('div');
-            bubble.className = `bubble ${type}`;
-            bubble.innerHTML = text;
-            chatDisplay.appendChild(bubble);
-            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        function addDialogue(role, text) {
+            const div = document.createElement('div');
+            div.className = `dialogue ${role}`;
+            div.innerHTML = text;
+            flow.appendChild(div);
+            flow.scrollTop = flow.scrollHeight;
         }
 
-        function handleSend() {
-            const text = userInput.value.trim();
-            if (!text) return;
+        function nextStep() {
+            const val = input.value.trim();
+            if (!val) return;
 
-            addBubble('user', text);
-            logs.push(text);
-            userInput.value = "";
+            addDialogue('guest', val);
+            story.push(val);
+            input.value = "";
             step++;
 
-            // 자연스러운 지연 시간을 주어 AI가 대답하는 느낌 생성
             setTimeout(() => {
-                generateResponse(text);
-            }, 800);
+                if (step === 1) {
+                    addDialogue('master', `${val}... 향이 참 깊군요. <br><br>차 한 모금 넘기듯 묻겠습니다. 요즘 당신의 가슴 한구석을 자꾸만 건드리는 '그 일'은 무엇인가요?`);
+                } else if (step === 2) {
+                    addDialogue('master', `그랬군요. 그 일의 그림자가 당신을 얼마나 오랫동안 붙잡고 있었는지요... <br><br>그림자 너머, 당신이 사실은 간절히 지키고 싶었던 '당신의 모습'은 어떤 것이었습니까?`);
+                } else if (step === 3) {
+                    addDialogue('master', `이제 찻잔의 바닥이 보입니다. <br><br>그 모든 소란이 잦아든 고요한 밤, 당신의 마음이 가장 쉬고 싶어 하는 곳은 어디인가요?`);
+                } else {
+                    revealSource();
+                }
+            }, 1000);
         }
 
-        function generateResponse(userText) {
-            if (step === 1) {
-                const tea = userText.includes("차") ? userText : userText + " 차";
-                addBubble('ai', `${tea}라니, 탁월한 선택이에요. 따뜻하게 준비해 드릴게요. <br><br>이제 본론으로 들어가서... 요즘 당신의 마음을 가장 어지럽게 만드는 한 가지는 무엇인가요?`);
-                stepCount.innerText = "마음 열기";
-            } 
-            else if (step === 2) {
-                addBubble('ai', "그렇군요... 그 일이 당신의 마음속에 어떤 감정을 남겼나요? 슬픔일 수도, 원망일 수도, 혹은 허무함일 수도 있겠네요.");
-                stepCount.innerText = "깊이 들여다보기";
-            } 
-            else if (step === 3) {
-                addBubble('ai', "이야기해주셔서 고마워요. 마지막으로 하나만 더 여쭤볼게요. <br><br>만약 당신이 가장 소중하게 생각하는 사람이 당신과 같은 고민을 하고 있다면, 그에게 어떤 말을 해주고 싶나요?");
-                stepCount.innerText = "마지막 질문";
-            } 
-            else {
-                showFinal();
-            }
-        }
+        function revealSource() {
+            const resultArea = document.getElementById('scrollResult');
+            const resultText = document.getElementById('rootCauseText');
+            const all = story.join(" ");
 
-        function showFinal() {
-            const finalResult = document.getElementById('finalResult');
-            const analysisText = document.getElementById('analysisText');
-            const allText = logs.join(" ");
-
-            let core = "";
-            if (allText.match(/잘|성공|실수|실패|해야/)) {
-                core = "<b>'완벽해야 한다는 책임감'</b>이 당신의 어깨를 무겁게 하고 있네요. 타인의 기준에 맞추려다 정작 소중한 당신의 속도를 잊은 것은 아닌지 돌아봐야 할 것 같아요.";
-            } else if (allText.match(/혼자|누구|친구|사람|외롭/)) {
-                core = "당신의 마음 깊은 곳에는 <b>'온전히 연결되고 싶은 갈망'</b>이 자리 잡고 있습니다. 누군가에게 기대고 싶은 마음은 약함이 아니라, 사랑이 많다는 증거이기도 합니다.";
-            } else if (allText.match(/화|짜증|상처|그사람|말/)) {
-                core = "당신은 현재 <b>'나를 지키고 싶은 방어 기제'</b>가 작동하고 있어요. 상처받지 않으려 마음의 문을 닫고 있지만, 사실은 누구보다 따뜻한 이해를 바라고 있군요.";
+            let analysis = "";
+            if (all.match(/일|공부|성공|잘|못|실수/)) {
+                analysis = "당신은 <b>'자신에게 너무나도 엄격한 스승'</b>을 마음속에 두고 계시군요. <br>상처의 근원은 밖이 아니라, 스스로를 다그치는 그 높은 기준에 있습니다. <br>오늘은 당신의 서툰 모습조차 따뜻한 찻물로 안아주시길.";
+            } else if (all.match(/사람|친구|그애|말|상처|버린/)) {
+                analysis = "당신의 상처는 <b>'누구보다 깊은 사랑을 주고받고 싶은 갈망'</b>에서 피어났습니다. <br>뿌리가 깊은 나무일수록 바람에 흔들리는 법이니, <br>사람에 흔들리는 당신은 그만큼 뿌리가 깊은 사람이라는 뜻이기도 합니다.";
+            } else if (all.match(/나|자신|왜|바보|싫/)) {
+                analysis = "당신의 마음은 지금 <b>'나 자신과의 화해'</b>를 간절히 기다리고 있습니다. <br>상처의 근원은 스스로를 미워하는 작은 습관들이 쌓인 것이겠지요. <br>찻잔 속의 당신을 가만히 들여다보며, '미안하다'고 한마디 건네보세요.";
             } else {
-                core = "당신은 지금 <b>'잠시 멈춰갈 휴식'</b>이 가장 필요한 상태입니다. 마음의 근원을 찾으려 너무 애쓰기보다, 오늘은 그저 고생한 자신을 푹 쉬게 해주는 건 어떨까요?";
+                analysis = "당신은 그저 <b>'온전한 고요'</b>를 잊고 지내오셨군요. <br>상처의 원인이 무엇이든, 지금 당신에게 필요한 것은 답을 찾는 것이 아니라 <br>찻잔의 온기처럼 당신을 따뜻하게 덮어줄 시간입니다.";
             }
 
-            analysisText.innerHTML = `${core}<br><br>오늘 나눈 이 대화가 당신의 밤을 조금 더 평온하게 만들기를 바랍니다.`;
-            finalResult.style.display = 'flex';
+            resultText.innerHTML = analysis;
+            resultArea.style.display = 'flex';
         }
 
-        // 엔터키 전송 지원
-        userInput.addEventListener('keypress', (e) => {
+        // 입력창 자동 높이 조절
+        input.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // 엔터키 전송
+        input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                handleSend();
+                nextStep();
             }
         });
     </script>
