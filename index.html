@@ -3,186 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>마음 한잔 - 근원 찾기</title>
+    <title>마음 한잔 - 당신의 깊은 곳으로</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;500&family=Noto+Sans+KR:wght@300;400;500&display=swap');
 
         :root {
-            --primary-brown: #6d4c41;
+            --warm-beige: #f9f7f2;
             --soft-brown: #8d6e63;
-            --bg-color: #fdfaf9;
+            --deep-brown: #5d4037;
+            --accent-color: #a1887f;
         }
 
         body {
             margin: 0; padding: 0;
+            background-color: var(--warm-beige);
+            font-family: 'Noto Sans KR', sans-serif;
+            color: var(--deep-brown);
             display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            font-family: 'Noto Sans KR', sans-serif;
-            color: #4e342e;
         }
 
         .container {
-            width: 95%; max-width: 500px;
-            background: rgba(255, 255, 255, 0.98);
-            padding: 30px; border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            position: relative; overflow: hidden;
+            width: 100%; max-width: 450px; height: 90vh;
+            background: #fff; border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex; flex-direction: column; overflow: hidden;
+            position: relative;
         }
 
-        /* Progress Bar */
-        .progress-container { width: 100%; height: 4px; background: #eee; margin-bottom: 20px; border-radius: 2px; display: none; }
-        #progressBar { width: 0%; height: 100%; background: var(--soft-brown); transition: width 0.5s; border-radius: 2px; }
+        /* 헤더 */
+        header {
+            padding: 25px; border-bottom: 1px solid #f0eeeb;
+            text-align: center; background: #fff;
+        }
+        header h1 { 
+            font-family: 'Noto Serif KR', serif; font-size: 1.4rem; margin: 0; color: var(--deep-brown); 
+        }
 
-        h1 { font-size: 1.6rem; color: var(--primary-brown); margin-bottom: 10px; }
-        .subtitle { font-size: 0.9rem; color: #a1887f; margin-bottom: 25px; }
+        /* 채팅 영역 */
+        #chatDisplay {
+            flex: 1; padding: 20px; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 15px;
+            scroll-behavior: smooth; background: #fafaf9;
+        }
 
-        /* Tea Selector */
-        .tea-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
-        .tea-option { cursor: pointer; padding: 12px; border: 1px solid #efebe9; border-radius: 12px; font-size: 0.85rem; transition: 0.3s; background: #fff; }
-        .tea-option.active { background: var(--soft-brown); color: white; border-color: var(--soft-brown); }
+        .bubble {
+            max-width: 80%; padding: 12px 18px; border-radius: 20px;
+            font-size: 0.95rem; line-height: 1.6; position: relative;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .ai {
+            align-self: flex-start; background: #fff;
+            border: 1px solid #efebe9; border-bottom-left-radius: 2px;
+        }
+        .user {
+            align-self: flex-end; background: var(--soft-brown);
+            color: #fff; border-bottom-right-radius: 2px;
+        }
 
-        /* Input Area */
-        #chatDisplay { max-height: 200px; overflow-y: auto; margin-bottom: 20px; text-align: left; padding: 10px; border-radius: 10px; background: #fcfaf9; display: none; }
-        .msg { margin-bottom: 10px; font-size: 0.9rem; line-height: 1.5; padding: 10px; border-radius: 10px; }
-        .ai-msg { background: #efebe9; color: #4e342e; border-bottom-left-radius: 2px; }
+        /* 입력 영역 */
+        .input-area {
+            padding: 20px; background: #fff; border-top: 1px solid #f0eeeb;
+            display: flex; flex-direction: column;
+        }
+        textarea {
+            width: 100%; height: 80px; border: none; outline: none;
+            resize: none; font-size: 1rem; color: var(--deep-brown);
+            font-family: inherit;
+        }
+        .controls {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
+        }
+        .step-info { font-size: 0.75rem; color: var(--accent-color); }
         
-        textarea { width: 100%; height: 110px; padding: 15px; border: 1.5px solid #d7ccc8; border-radius: 18px; resize: none; box-sizing: border-box; outline: none; font-size: 1rem; transition: 0.3s; }
-        textarea:focus { border-color: var(--soft-brown); box-shadow: 0 0 8px rgba(141, 110, 99, 0.2); }
+        button {
+            padding: 10px 25px; border: none; border-radius: 25px;
+            background: var(--soft-brown); color: white; cursor: pointer;
+            font-weight: 500; transition: 0.3s;
+        }
+        button:disabled { background: #d7ccc8; opacity: 0.6; }
 
-        button { width: 100%; margin-top: 15px; padding: 15px; border: none; border-radius: 15px; background: var(--soft-brown); color: white; cursor: pointer; font-weight: 500; font-size: 1rem; }
-        button:hover { background: var(--primary-brown); }
+        /* 결과창 */
+        #finalResult {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; display: none; z-index: 10;
+            flex-direction: column; justify-content: center; align-items: center;
+            padding: 40px; box-sizing: border-box; text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
 
-        /* Final Result */
-        #analysisResult { display: none; text-align: left; background: #fff; padding: 20px; border: 1px dashed var(--soft-brown); border-radius: 20px; margin-top: 20px; animation: fadeIn 1s; }
-        .root-cause { font-size: 1.1rem; color: #d32f2f; font-weight: 700; display: block; margin: 10px 0; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div id="loginSection">
-            <h1>마음 한잔</h1>
-            <p class="subtitle">오롯이 당신만을 위한 대화의 공간입니다.</p>
-            <input type="text" id="userName" style="width:80%; padding:12px; border:1px solid #ddd; border-radius:10px;" placeholder="이름 혹은 별명">
-            <button onclick="startApp()" style="margin-top:20px;">대화 시작하기</button>
+        <header>
+            <h1 id="title">마음 한잔</h1>
+        </header>
+
+        <div id="chatDisplay">
+            <div class="bubble ai">안녕하세요. 오늘 하루는 어떠셨나요? <br>차 한 잔을 내어드리고 싶어요. 지금 어떤 차가 생각나시나요? (녹차, 홍차, 카모마일 등)</div>
         </div>
 
-        <div id="mainContent" style="display:none;">
-            <div class="progress-container" id="pContainer"><div id="progressBar"></div></div>
-            <h1 id="welcomeTitle">마음 한잔</h1>
-            <p id="mainSubtitle" class="subtitle">먼저, 지금 마시고 싶은 차를 골라주세요.</p>
-
-            <div id="step1">
-                <div class="tea-selector">
-                    <div class="tea-option active" onclick="selectTea('말차', this)">말차</div>
-                    <div class="tea-option" onclick="selectTea('우롱차', this)">우롱차</div>
-                    <div class="tea-option" onclick="selectTea('카모마일', this)">카모마일</div>
-                </div>
+        <div class="input-area" id="inputZone">
+            <textarea id="userInput" placeholder="편하게 적어주세요..."></textarea>
+            <div class="controls">
+                <span id="stepCount" class="step-info">대화의 시작</span>
+                <button id="sendBtn" onclick="handleSend()">보내기</button>
             </div>
+        </div>
 
-            <div id="chatDisplay"></div>
-            
-            <textarea id="userInput" placeholder="요즘 당신의 마음을 무겁게 하는 것은 무엇인가요?"></textarea>
-            <button id="actionBtn" onclick="processStep()">이야기 나누기</button>
-            
-            <div id="analysisResult">
-                <strong style="color:var(--soft-brown);">[마음의 근원 분석 보고서]</strong>
-                <p id="analysisText"></p>
-                <div id="rootCauseDisplay"></div>
-                <button onclick="location.reload()" style="background:#a1887f; font-size:0.8rem; padding:8px;">새로운 대화 시작</button>
-            </div>
+        <div id="finalResult">
+            <div style="font-family: 'Noto Serif KR', serif; margin-bottom: 20px; font-size: 1.2rem;">오늘의 마음 정리</div>
+            <div id="analysisText" style="line-height: 1.8; color: #5d4037; margin-bottom: 30px;"></div>
+            <button onclick="location.reload()" style="background: none; color: var(--accent-color); text-decoration: underline;">다시 차 한 잔 마시기</button>
         </div>
     </div>
 
     <script>
         let step = 0;
-        let userName = "";
-        let selectedTea = "말차";
-        let responses = [];
-        const MAX_STEPS = 3;
+        let logs = [];
+        const chatDisplay = document.getElementById('chatDisplay');
+        const userInput = document.getElementById('userInput');
+        const stepCount = document.getElementById('stepCount');
 
-        function startApp() {
-            userName = document.getElementById('userName').value || "손님";
-            document.getElementById('loginSection').style.display = 'none';
-            document.getElementById('mainContent').style.display = 'block';
-            document.getElementById('welcomeTitle').innerText = `${userName}님의 티타임`;
+        function addBubble(type, text) {
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${type}`;
+            bubble.innerHTML = text;
+            chatDisplay.appendChild(bubble);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
         }
 
-        function selectTea(tea, el) {
-            selectedTea = tea;
-            document.querySelectorAll('.tea-option').forEach(opt => opt.classList.remove('active'));
-            el.classList.add('active');
-        }
+        function handleSend() {
+            const text = userInput.value.trim();
+            if (!text) return;
 
-        function addChat(role, text) {
-            const display = document.getElementById('chatDisplay');
-            display.style.display = 'block';
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${role}-msg`;
-            msgDiv.innerText = text;
-            display.appendChild(msgDiv);
-            display.scrollTop = display.scrollHeight;
-        }
-
-        function processStep() {
-            const input = document.getElementById('userInput').value;
-            if (!input) { alert("잠시라도 좋으니 마음을 적어주세요."); return; }
-            
-            responses.push(input);
-            document.getElementById('userInput').value = "";
-            document.getElementById('pContainer').style.display = 'block';
-            
+            addBubble('user', text);
+            logs.push(text);
+            userInput.value = "";
             step++;
-            const progress = (step / (MAX_STEPS + 1)) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
 
+            // 자연스러운 지연 시간을 주어 AI가 대답하는 느낌 생성
+            setTimeout(() => {
+                generateResponse(text);
+            }, 800);
+        }
+
+        function generateResponse(userText) {
             if (step === 1) {
-                document.getElementById('step1').style.display = 'none';
-                document.getElementById('mainSubtitle').innerText = "당신의 깊은 속마음을 따라가는 중입니다.";
-                addChat('ai', `따뜻한 ${selectedTea} 한 잔 드릴게요. 그 일이 당신을 구체적으로 어떻게 아프게 하나요? 조금 더 깊이 말씀해 주시겠어요?`);
-            } else if (step === 2) {
-                addChat('ai', "그 감정의 가장 밑바닥에는 어떤 두려움이나 소망이 숨어있을까요? 아주 솔직해져도 괜찮습니다.");
-            } else if (step === 3) {
-                addChat('ai', "마지막으로 묻고 싶어요. 만약 그 상황이 없었더라면, 당신은 어떤 모습으로 웃고 있었을까요?");
-                document.getElementById('actionBtn').innerText = "나의 근원 확인하기";
-            } else {
-                showFinalAnalysis();
+                const tea = userText.includes("차") ? userText : userText + " 차";
+                addBubble('ai', `${tea}라니, 탁월한 선택이에요. 따뜻하게 준비해 드릴게요. <br><br>이제 본론으로 들어가서... 요즘 당신의 마음을 가장 어지럽게 만드는 한 가지는 무엇인가요?`);
+                stepCount.innerText = "마음 열기";
+            } 
+            else if (step === 2) {
+                addBubble('ai', "그렇군요... 그 일이 당신의 마음속에 어떤 감정을 남겼나요? 슬픔일 수도, 원망일 수도, 혹은 허무함일 수도 있겠네요.");
+                stepCount.innerText = "깊이 들여다보기";
+            } 
+            else if (step === 3) {
+                addBubble('ai', "이야기해주셔서 고마워요. 마지막으로 하나만 더 여쭤볼게요. <br><br>만약 당신이 가장 소중하게 생각하는 사람이 당신과 같은 고민을 하고 있다면, 그에게 어떤 말을 해주고 싶나요?");
+                stepCount.innerText = "마지막 질문";
+            } 
+            else {
+                showFinal();
             }
         }
 
-        function showFinalAnalysis() {
-            document.getElementById('chatDisplay').style.display = 'none';
-            document.getElementById('userInput').style.display = 'none';
-            document.getElementById('actionBtn').style.display = 'none';
-            document.getElementById('mainSubtitle').innerText = "대화를 통해 발견한 당신의 진심입니다.";
-
-            const analysisResult = document.getElementById('analysisResult');
+        function showFinal() {
+            const finalResult = document.getElementById('finalResult');
             const analysisText = document.getElementById('analysisText');
-            const rootDisplay = document.getElementById('rootCauseDisplay');
-            
-            const fullText = responses.join(" ");
-            
-            // 심리 근원 로직 (키워드 매칭 확장)
-            let result = {
-                title: "인정받고 싶은 마음",
-                desc: "당신의 고통은 사실 '나의 가치를 확인받지 못할까 봐' 하는 두려움에서 시작된 것 같습니다. 스스로를 증명하려 애쓰지 않아도 당신은 이미 소중합니다."
-            };
+            const allText = logs.join(" ");
 
-            if (fullText.match(/혼자|버려진|외롭|무관심|연락/)) {
-                result = { title: "연결되고 싶은 갈망", desc: "누군가에게 온전히 이해받고 싶어 하는 마음이 상처의 뿌리에 있습니다. 외로움은 당신이 사랑이 많은 사람이기 때문에 느끼는 감정입니다." };
-            } else if (fullText.match(/실수|완벽|실패|망칠까봐|공부|성적/)) {
-                result = { title: "자신을 향한 높은 잣대", desc: "당신의 상처는 외부가 아닌 '스스로를 용서하지 못하는 마음'에서 기인합니다. 가끔은 넘어져도 괜찮다는 허락이 당신에게 가장 필요해 보입니다." };
-            } else if (fullText.match(/상처|욕|비난|사람들|눈치/)) {
-                result = { title: "보호받고 싶은 안전감", desc: "주변 환경이나 타인으로부터 나를 지키고 싶은 방어 기제가 상처의 원인입니다. 당신의 예민함은 사실 자신을 지키기 위한 소중한 안테나입니다." };
+            let core = "";
+            if (allText.match(/잘|성공|실수|실패|해야/)) {
+                core = "<b>'완벽해야 한다는 책임감'</b>이 당신의 어깨를 무겁게 하고 있네요. 타인의 기준에 맞추려다 정작 소중한 당신의 속도를 잊은 것은 아닌지 돌아봐야 할 것 같아요.";
+            } else if (allText.match(/혼자|누구|친구|사람|외롭/)) {
+                core = "당신의 마음 깊은 곳에는 <b>'온전히 연결되고 싶은 갈망'</b>이 자리 잡고 있습니다. 누군가에게 기대고 싶은 마음은 약함이 아니라, 사랑이 많다는 증거이기도 합니다.";
+            } else if (allText.match(/화|짜증|상처|그사람|말/)) {
+                core = "당신은 현재 <b>'나를 지키고 싶은 방어 기제'</b>가 작동하고 있어요. 상처받지 않으려 마음의 문을 닫고 있지만, 사실은 누구보다 따뜻한 이해를 바라고 있군요.";
+            } else {
+                core = "당신은 지금 <b>'잠시 멈춰갈 휴식'</b>이 가장 필요한 상태입니다. 마음의 근원을 찾으려 너무 애쓰기보다, 오늘은 그저 고생한 자신을 푹 쉬게 해주는 건 어떨까요?";
             }
 
-            analysisText.innerText = `${userName}님, 대화를 통해 본 당신의 상처의 근원은...`;
-            rootDisplay.innerHTML = `<span class="root-cause">"${result.title}"</span><p style="font-size:0.9rem; line-height:1.6;">${result.desc}</p>`;
-            analysisResult.style.display = 'block';
+            analysisText.innerHTML = `${core}<br><br>오늘 나눈 이 대화가 당신의 밤을 조금 더 평온하게 만들기를 바랍니다.`;
+            finalResult.style.display = 'flex';
         }
+
+        // 엔터키 전송 지원
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
     </script>
 </body>
 </html>
